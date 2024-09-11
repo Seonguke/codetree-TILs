@@ -16,7 +16,11 @@ class Action():
         self.N = 0
         self.M = 0
         self.tower_arr = []
-        self.dircetion_priority = [[0, 1], [-1, 0], [1, 0], [0, -1]]  # 우/하/상/좌
+        self.dircetion_priority = [[0, 1],
+                                   [1, 0],
+                                   [0, -1],
+                                   [-1, 0]
+                                   ]  # 우/하/상/좌
         self.bomb_pos = [[-1, -1], [-1, 0], [-1, 1],
                          [0, -1], [0, 0], [0, 1],
                          [1, -1], [1, 0], [1, 1]]
@@ -108,7 +112,6 @@ class Action():
         self.tower_arr[attacker_i][attacker_j].power += self.N + self.M
 
         self.tower_arr[target_i][target_j].is_target = True
-        #elf.tower_arr[target_i][target_j].power -= self.tower_arr[attacker_i][attacker_j].power
 
         if not self.attack_laser():
             self.attack_bomb()
@@ -144,6 +147,7 @@ class Action():
                 di, dj = self.dircetion_priority[i]
                 next_i = (cur_i + di) % self.N #범위 반대 공격
                 next_j = (cur_j + dj) % self.M #
+
                 if self.tower_arr[next_i][next_j].power == 0 or visist[next_i][next_j]: continue
                 if self.tower_arr[next_i][next_j].is_target == True:
                     route.append([next_i,next_j])
