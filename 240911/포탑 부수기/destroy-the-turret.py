@@ -34,7 +34,7 @@ class Action():
                 cTower = Tower()
                 cTower.power = power_arr[j]
                 cTower.sum_of_row_col = i + j + 2
-                cTower.col = i + 1
+                cTower.col = j + 1
                 cTower.cur_pos = [i, j]
                 row_tower.append(cTower)
             self.tower_arr.append(row_tower)
@@ -207,8 +207,8 @@ class Action():
     def play(self):
         for i in range(self.K):
             if self.check_tower() == False : break
-            #if i==36:
-            #    a=0
+            if i==6:
+                a=0
             #print('ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ')
             #print(i)
             self.find_low_power_tower()
