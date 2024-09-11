@@ -108,7 +108,7 @@ class Action():
         self.tower_arr[attacker_i][attacker_j].power += self.N + self.M
 
         self.tower_arr[target_i][target_j].is_target = True
-        self.tower_arr[target_i][target_j].power -= self.tower_arr[attacker_i][attacker_j].power
+        #elf.tower_arr[target_i][target_j].power -= self.tower_arr[attacker_i][attacker_j].power
 
         if not self.attack_laser():
             self.attack_bomb()
@@ -122,8 +122,12 @@ class Action():
         if ret_q:
             for side in ret_q:
                 side_i,side_j = side
-                self.tower_arr[side_i][side_j].is_side_target=True
-                self.tower_arr[side_i][side_j].power -= self.tower_arr[attacker_i][attacker_j].power // 2
+                if self.tower_arr[side_i][side_j].is_target==True:
+                    self.tower_arr[side_i][side_j].power -= self.tower_arr[attacker_i][attacker_j].power
+                else:
+
+                    self.tower_arr[side_i][side_j].is_side_target=True
+                    self.tower_arr[side_i][side_j].power -= self.tower_arr[attacker_i][attacker_j].power // 2
             return True
         else:
             return False
@@ -133,7 +137,7 @@ class Action():
         q.append([attacker_i, attacker_j,[]])
         visist = [[False]*self.M for _ in range(self.N)]
         visist[attacker_i][attacker_j]= True
-        routess =[]
+        routess = []
         while (q):
             cur_i, cur_j,route = q.popleft()
             for i in range(4):
@@ -142,6 +146,7 @@ class Action():
                 next_j = (cur_j + dj) % self.M #
                 if self.tower_arr[next_i][next_j].power == 0 or visist[next_i][next_j]: continue
                 if self.tower_arr[next_i][next_j].is_target == True:
+                    route.append([next_i,next_j])
                     return  route[:]
 
                 qrotes = route[:]
@@ -160,7 +165,9 @@ class Action():
             next_j = (dj + target_j) % self.M
 
             if next_i == attacker_i and next_j == attacker_j:continue
-            if next_i == target_i and next_j == target_j: continue
+            if next_i == target_i and next_j == target_j:
+                self.tower_arr[next_i][next_j].power -= self.tower_arr[attacker_i][attacker_j].power
+                continue
             if self.tower_arr[next_i][next_j].power==0:continue
             self.tower_arr[next_i][next_j].power -= self.tower_arr[attacker_i][attacker_j].power//2
             self.tower_arr[next_i][next_j].is_side_target =True
@@ -187,14 +194,31 @@ class Action():
                 if self.tower_arr[i][j].power> 0  :
                     max_power =max(max_power,self.tower_arr[i][j].power)
         print(max_power)
+
+    def check_tower(self):
+        cnt = 0
+        for i in range(self.N):
+            for j in range(self.M):
+                if self.tower_arr[i][j].power > 0:
+                    cnt+=1
+
+        if cnt <2: return False
+        else: return
     def play(self):
         for i in range(self.K):
+            if self.check_tower() == False : break
+            #if i==36:
+            #    a=0
+            #print('ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ')
+            #print(i)
             self.find_low_power_tower()
             self.find_high_power_tower()
             self.attack(i)
             self.heal_tower()
-            #print()
+
+
             #self.print_tower_arr()
+            #print('ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ')
         self.print_max_tower()
 
 
