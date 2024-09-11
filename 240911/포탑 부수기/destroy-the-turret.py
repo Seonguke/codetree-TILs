@@ -178,7 +178,8 @@ class Action():
                 else:
                     if self.tower_arr[i][j].power> 0  :
                         self.tower_arr[i][j].power +=1
-
+                if self.tower_arr[i][j].power < 0:
+                    self.tower_arr[i][j].power=0
     def print_max_tower(self):
         max_power = -1
         for i in range(self.N):
@@ -188,8 +189,6 @@ class Action():
         print(max_power)
     def play(self):
         for i in range(self.K):
-            if i == 1 :
-                a=0
             self.find_low_power_tower()
             self.find_high_power_tower()
             self.attack(i)
