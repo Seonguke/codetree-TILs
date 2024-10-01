@@ -137,31 +137,39 @@ class CMagicForest():
             ret = True
         return ret
 
-    def fairy_move(self, cur_i, cur_j):
+    def fairy_move(self):
 
-        if self.fairy_cent[0] < cur_i:
-            self.fairy_cent = [cur_i, cur_j]
+        q = deque([[self.fairy_cent[0],self.fairy_cent[1]]])
 
-        for dij in self.exit_dir:
-            next_i = cur_i + dij[0]
-            next_j = cur_j + dij[1]
+        self.visit = [[0] * self.c for _ in range(self.r+self.margin)]
 
-            if 0 <= next_i < self.r +self.margin and 0 <= next_j < self.c:
-                cur_num = self.forest_arr[cur_i][cur_j]
+        while(q):
+            cur_i,cur_j = q.pop()
 
-                if cur_num < 0:  # ext_num
-                    if self.forest_arr[next_i][next_j] != 0:
-                        next_num = self.forest_arr[next_i][next_j]
-                        self.forest_arr[cur_i][cur_j] = 0
-                        self.fairy_move(next_i, next_j)
-                        self.forest_arr[cur_i][cur_j] = cur_num
+            if self.fairy_cent[0] < cur_i:
+                self.fairy_cent = [cur_i, cur_j]
 
-                elif cur_num > 0:
-                    if self.forest_arr[next_i][next_j] == cur_num or self.forest_arr[next_i][next_j] == -cur_num:
-                        next_num = self.forest_arr[next_i][next_j]
-                        self.forest_arr[cur_i][cur_j] = 0
-                        self.fairy_move(next_i, next_j)
-                        self.forest_arr[cur_i][cur_j] = cur_num
+            for dij in self.exit_dir:
+                next_i = cur_i + dij[0]
+                next_j = cur_j + dij[1]
+
+
+
+                if 0 <= next_i < self.r +self.margin and 0 <= next_j < self.c:
+                    cur_num = self.forest_arr[cur_i][cur_j]
+
+                    if self.visit[next_i][next_j] != 0:
+                        continue
+
+                    if cur_num < 0:  # ext_num
+                        if self.forest_arr[next_i][next_j] != 0 :
+                            q.append([next_i, next_j])
+                            self.visit[cur_i][cur_j]=1
+
+                    elif cur_num > 0:
+                        if self.forest_arr[next_i][next_j] == cur_num or self.forest_arr[next_i][next_j] == -cur_num:
+                            q.append([next_i, next_j])
+                            self.visit[cur_i][cur_j] = 1
 
     def run(self):
 
@@ -175,11 +183,10 @@ class CMagicForest():
             if self.golam_cent[0] <= 3:
                 self.forest_arr = [[0] * self.c for _ in range(self.r + self.margin)]
                 continue
-                #self.golam_cent = golam[:]
-                #self.golam_move(golam, golam_num)
+
 
             self.fairy_cent = self.golam_cent[:]
-            self.fairy_move(self.fairy_cent[0], self.fairy_cent[1])
+            self.fairy_move()
             self.fairy_i_cnt += self.fairy_cent[0] - 2
             #print(self.fairy_i_cnt)
         print(self.fairy_i_cnt)
