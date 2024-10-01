@@ -15,10 +15,11 @@ class CMagicForest():
                          [0, -1]]  # 서
 
         self.fairy_i_cnt = 0  # if r==6  0~7   더할때 i - 1   0,1 장외
+        self.margin = 3
 
     def input_param(self):
         self.r, self.c, self.k = map(int, input().split())
-        self.forest_arr = [[0] * self.c for _ in range(self.r + 2)]
+        self.forest_arr = [[0] * self.c for _ in range(self.r + self.margin)]
 
         for i in range(self.k):
             c, d = map(int, input().split())  # 출발, 출구 방향
@@ -62,7 +63,7 @@ class CMagicForest():
 
         for move_pos in move_arr:
             move_i, move_j = move_pos
-            if move_i < 0 or move_j < 0 or move_i >= self.r +2 or move_j >= self.c:
+            if move_i < 0 or move_j < 0 or move_i >= self.r + self.margin or move_j >= self.c:
                 ret = False
                 break
             if self.forest_arr[move_pos[0]][move_pos[1]] != 0:
@@ -77,10 +78,10 @@ class CMagicForest():
         for dij in self.exit_dir:
             next_i = cur_i + dij[0]
             next_j = cur_j + dij[1]
-            if 0<=next_i<self.r+2 and 0<=next_j<self.c:
+            if 0 <= next_i < self.r +self.margin and 0 <= next_j < self.c:
                 self.forest_arr[next_i][next_j] = num
 
-    def golam_exit_check(self, cur_i, cur_j, exit_dir, move_dir,golam_num):
+    def golam_exit_check(self, cur_i, cur_j, exit_dir, move_dir, golam_num):
 
         move_exit_dir = exit_dir
 
@@ -119,12 +120,12 @@ class CMagicForest():
         for golam_priority in range(3):
 
             if self.golam_can_move(cur_i, cur_j, golam_priority) == True:
-                move_i,move_j = self.move_cur_pos(cur_i,cur_j,golam_priority)
+                move_i, move_j = self.move_cur_pos(cur_i, cur_j, golam_priority)
 
                 if self.golam_cent[0] < move_i:
                     self.add_forest_gol_num(cur_i, cur_j, 0)
                     self.add_forest_gol_num(move_i, move_j, golam_num)
-                    moved_exit_dir = self.golam_exit_check(move_i, move_j, exit_dir, golam_priority,golam_num)
+                    moved_exit_dir = self.golam_exit_check(move_i, move_j, exit_dir, golam_priority, golam_num)
 
                     golam = [move_i, move_j, moved_exit_dir]
                     self.golam_cent = [move_i, move_j, moved_exit_dir]
@@ -136,53 +137,51 @@ class CMagicForest():
             ret = True
         return ret
 
-    def fairy_move(self,cur_i,cur_j):
+    def fairy_move(self, cur_i, cur_j):
 
         if self.fairy_cent[0] < cur_i:
-            self.fairy_cent = [cur_i,cur_j]
+            self.fairy_cent = [cur_i, cur_j]
 
         for dij in self.exit_dir:
-            next_i = cur_i +dij[0]
-            next_j = cur_j +dij[1]
+            next_i = cur_i + dij[0]
+            next_j = cur_j + dij[1]
 
-            if 0<=next_i<self.r+2 and 0<=next_j<self.c:
+            if 0 <= next_i < self.r +self.margin and 0 <= next_j < self.c:
                 cur_num = self.forest_arr[cur_i][cur_j]
 
-                if cur_num <0: # ext_num
-                    if self.forest_arr[next_i][next_j] !=0:
-                        next_num = self.forest_arr[next_i][next_j]
-                        self.forest_arr[cur_i][cur_j] = 0
-                        self.fairy_move(next_i,next_j)
-                        self.forest_arr[cur_i][cur_j] = cur_num
-
-                elif cur_num > 0 :
-                    if self.forest_arr[next_i][next_j] ==cur_num or self.forest_arr[next_i][next_j] ==-cur_num:
+                if cur_num < 0:  # ext_num
+                    if self.forest_arr[next_i][next_j] != 0:
                         next_num = self.forest_arr[next_i][next_j]
                         self.forest_arr[cur_i][cur_j] = 0
                         self.fairy_move(next_i, next_j)
                         self.forest_arr[cur_i][cur_j] = cur_num
 
-
+                elif cur_num > 0:
+                    if self.forest_arr[next_i][next_j] == cur_num or self.forest_arr[next_i][next_j] == -cur_num:
+                        next_num = self.forest_arr[next_i][next_j]
+                        self.forest_arr[cur_i][cur_j] = 0
+                        self.fairy_move(next_i, next_j)
+                        self.forest_arr[cur_i][cur_j] = cur_num
 
     def run(self):
 
         for i, golam in enumerate(self.golam):
-            original_golam = golam[:]
+
             golam_num = i + 1
             self.golam_cent = golam[:]
-            if i==5:
-                a=0
+
             self.golam_move(golam, golam_num)
 
-            if self.golam_cent[0] < 2:
-                self.forest_arr = [[0] * self.c for _ in range(self.r + 2)]
-                self.tmp_golam = golam[:]
-                self.golam_move(golam, golam_num)
+            if self.golam_cent[0] <= 3:
+                self.forest_arr = [[0] * self.c for _ in range(self.r + self.margin)]
+                continue
+                #self.golam_cent = golam[:]
+                #self.golam_move(golam, golam_num)
 
             self.fairy_cent = self.golam_cent[:]
-            self.fairy_move( self.fairy_cent[0], self.fairy_cent[1])
-            self.fairy_i_cnt += self.fairy_cent[0] -1
-            a=0
+            self.fairy_move(self.fairy_cent[0], self.fairy_cent[1])
+            self.fairy_i_cnt += self.fairy_cent[0] - 2
+            #print(self.fairy_i_cnt)
         print(self.fairy_i_cnt)
 
 
