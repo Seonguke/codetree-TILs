@@ -126,7 +126,7 @@ class CRotate():
             else:
                 break
 
-            print(treasure_num)
+            print(treasure_num, end= ' ')
             # pos_arr.sort(key=lambda x:(x[1],-x[0]))
             # if no empty_arr : break
             # self.fiil_empty_arr
