@@ -20,8 +20,7 @@ class CRotate():
         self.rot_priority = [[-1 + self.cent, -1 + self.cent], [-1 + self.cent, 0 + self.cent],
                              [-1 + self.cent, 1 + self.cent],
                              [0 + self.cent, -1 + self.cent], [self.cent, self.cent], [0 + self.cent, 1 + self.cent],
-                             [-1 + self.cent, -1 + self.cent], [-1 + self.cent, 0 + self.cent],
-                             [-1 + self.cent, 1 + self.cent]]
+                             [+1 + self.cent, -1 + self.cent], [+1 + self.cent, 0 + self.cent], [+1 + self.cent, 1 + self.cent]]
 
     def input_param(self):
         self.k, self.m = map(int, input().split())
@@ -84,7 +83,7 @@ class CRotate():
 
         for i in range(self.n):
             for j in range(self.n):
-                if visit[i][j] is None and roate_arr[i][j] is not None:
+                if visit[i][j] is None :
                     arr_pos = []
                     self.find_same_num(i, j, visit, roate_arr, arr_pos)
 
@@ -93,10 +92,6 @@ class CRotate():
                         pos_arr.extend(arr_pos)
 
         return pos_arr
-    def real_rotate(self,rot_degree,cent_i,cent_j):
-        self.get_rot_arr(self.arr_2d, cent_i, cent_j, rot_degree)
-        for i, rot_q_idx in enumerate(self.rot_q_idx):
-            self.arr_2d[cent_i + rot_q_idx[0]][cent_j + rot_q_idx[1]] = None
     def run(self):
 
         treasure_q = deque(self.arr_1d)
@@ -119,12 +114,9 @@ class CRotate():
                         for i, pos in enumerate(pos_arr):
                             if treasure_q:
                                 self.arr_2d[pos[0]][pos[1]] = treasure_q.popleft()
-                            else :
-                                self.arr_2d[pos[0]][pos[1]] = None
+
                     else:
                         break
-            else:
-                break
 
             print(treasure_num, end= ' ')
             # pos_arr.sort(key=lambda x:(x[1],-x[0]))
