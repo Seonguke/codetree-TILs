@@ -66,13 +66,14 @@ class CXmas():
                 for _,santa in self.santa.items():
                     sant_i, sant_j, prev_move_dir, santa_power, is_sleep, is_out = santa
                     if is_out:continue
-                    dist = self.distance2d(next_dear_i, next_dear_j, sant_i, sant_j)
-                    move_arr.append([dist, sant_i, sant_j, next_dear_i, next_dear_j, i])
+                    dist = self.distance2d(self.dear[0], self.dear[1], sant_i, sant_j)
+                    dist2 = self.distance2d(next_dear_i, next_dear_j, sant_i, sant_j)
+                    move_arr.append([dist, sant_i, sant_j, next_dear_i, next_dear_j, i,dist2])
 
-        move_arr.sort(key=lambda x: (x[0], -x[1], -x[2]))
+        move_arr.sort(key=lambda x: (x[0],x[-1], -x[1], -x[2]))
 
         self.arr_2d[self.dear[0]][self.dear[1]] = None
-        _, _, _, next_dear_i, next_dear_j, move_dir = move_arr[0]
+        _, _, _, next_dear_i, next_dear_j, move_dir,_ = move_arr[0]
         self.dear = [next_dear_i, next_dear_j, move_dir]
         if self.arr_2d[next_dear_i][next_dear_j] is not None and self.arr_2d[next_dear_i][next_dear_j] >0:
             self.dear_meet_santa()
@@ -194,15 +195,17 @@ class CXmas():
                     is_out = True
                 else:
                     is_in = self.check_arr_2d(sant_next_i, sant_next_j)
-                    if is_in == self.is_santa:
+                    if is_in == self.is_santa and self.arr_2d[sant_next_i][sant_next_j] != santa_num :
                         q.append([santa_num, self.arr_2d[sant_next_i][sant_next_j]])
                 is_sleep = 2
                 santa = [sant_next_i, sant_next_j, prev_move_dir, santa_power, is_sleep, is_out]
                 self.santa[santa_num] = santa
-                if is_out == False:
-                    self.arr_2d[sant_next_i][sant_next_j] = santa_num
+
                 self.arr_2d[sant_i + self.santa_move_dir[prev_move_dir][0]][
                     sant_j + self.santa_move_dir[prev_move_dir][1]] = None
+                if is_out == False:
+                    self.arr_2d[sant_next_i][sant_next_j] = santa_num
+
 
 
             else:
