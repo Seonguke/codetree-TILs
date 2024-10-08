@@ -84,11 +84,9 @@ class Cmazerunner():
                     arr_pos = []
                     for i in range(start_i , end_i):
                         for j in range(start_j , end_j):
-                            if board_runner[i][j] is not None :
-                                for _ in board_runner[i][j]:
-                                    arr_pos.append([i, j])
-                            if self.board[i][j] == self.EXIT:
-                                arr_pos.append([i,j])
+                            if board_runner[i][j] is not None or self.board[i][j] == self.EXIT :
+                                arr_pos.append([i, j])
+
                     if len(arr_pos) >= 2 and self.cur_exit in arr_pos:
                         arr.append([n, start_i, start_j])
         return arr
