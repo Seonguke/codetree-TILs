@@ -75,18 +75,20 @@ class Cmazerunner():
     def find_miro(self, board_runner):
         arr = []  # [N,starti,startj]
         for start_i in range(self.n):
-            if start_i ==1:
-                a=0
+
             for start_j in range(self.n):
                 for n in range(self.n):
                     end_i = start_i + n + 1
                     end_j = start_j + n + 1
-                    if not (0 <= end_i < self.n and 0 <= end_j < self.n): continue
+                    if not (0 <= end_i <= self.n and 0 <= end_j <= self.n): continue
                     arr_pos = []
                     for i in range(start_i , end_i):
                         for j in range(start_j , end_j):
-                            if board_runner[i][j] is not None or self.board[i][j] == self.EXIT:
-                                arr_pos.append([i, j])
+                            if board_runner[i][j] is not None :
+                                for _ in board_runner[i][j]:
+                                    arr_pos.append([i, j])
+                            if self.board[i][j] == self.EXIT:
+                                arr_pos.append([i,j])
                     if len(arr_pos) >= 2 and self.cur_exit in arr_pos:
                         arr.append([n, start_i, start_j])
         return arr
