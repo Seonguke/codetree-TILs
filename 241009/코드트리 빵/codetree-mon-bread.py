@@ -43,15 +43,17 @@ class CBread():
             dst_i, dst_j = self.person_store[person_idx]
 
             #print(f"idx : {person_idx}")
-            if person_idx == 57:
-                b=0
+            if person_idx == 33:
+                print(start_i,start_j)
             visit = [arr[:] for arr in self.board]
+            visit[start_i][start_j] = -1
             q = deque([[start_i, start_j, []]])
             move_dir= -1
+            move_arr = []
             while q:
                 cur_i, cur_j, cur_arr = q.popleft()
                 if cur_i == dst_i and cur_j == dst_j:
-                    move_dir = cur_arr[0]
+                    move_arr = cur_arr[0]
                     break
 
                 for i,dir in enumerate(self.move_dir):
@@ -59,20 +61,24 @@ class CBread():
                     next_j = cur_j + dir[1]
                     if not (0 <= next_i < self.n and 0 <= next_j < self.n): continue
                     if 0<=visit[next_i][next_j]<=1:
-                        q.append([next_i,next_j,cur_arr+[i]])
+                        q.append([next_i,next_j,cur_arr+[[next_i,next_j]]])
                         visit[next_i][next_j]=999
 
-            move_i = start_i + self.move_dir[move_dir][0]
-            move_j = start_j + self.move_dir[move_dir][1]
+            #move_i = start_i + self.move_dir[move_dir][0]
+            #move_j = start_j + self.move_dir[move_dir][1]
 
+            move_i,move_j = move_arr
             self.person[person_idx] = [move_i,move_j]
-            if move_i == dst_i and move_j == dst_j:
-                self.board[move_i][move_j]=-1
-                self.person_state[person_idx]=True
+            # if move_i == dst_i and move_j == dst_j:
+            #     self.board[move_i][move_j]=-1
+            #     self.person_state[person_idx]=True
 
     def arrive_check(self):
         cnt = len(self.person_state)
         for k, v in self.person_state.items():
+            if self.person[k] == self.person_store[k]:
+                self.board[self.person[k][0]][self.person[k][1]] = -1
+                self.person_state[k] = True
             if v == True:
                 cnt -= 1
         if cnt == 0:
@@ -112,16 +118,14 @@ class CBread():
     def run(self):
         time = 1
         while True:
-            if time == 28:
-                a = 0
-            #rint(time)
+
             self.move(time + self.margin)
             if self.arrive_check() == True:
                 break
             self.start_at_home(time + self.margin)
             time += 1
 
-        print(time)
+        print(time-1)
 
 
 if __name__ == "__main__":
