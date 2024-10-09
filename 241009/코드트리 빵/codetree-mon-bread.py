@@ -39,26 +39,32 @@ class CBread():
             if self.person[person_idx] is None : continue
             if self.person_state[person_idx]==True : continue
 
-            #visit = [arr[:] for arr in self.board]
             start_i, start_j = self.person[person_idx]
             dst_i, dst_j = self.person_store[person_idx]
-            cnt = 2
+
+            #print(f"idx : {person_idx}")
+            if person_idx == 57:
+                b=0
+            visit = [arr[:] for arr in self.board]
             q = deque([[start_i, start_j, []]])
-            move_arr= []
+            move_dir= -1
             while q:
                 cur_i, cur_j, cur_arr = q.popleft()
                 if cur_i == dst_i and cur_j == dst_j:
-                    move_arr = cur_arr[0]
+                    move_dir = cur_arr[0]
                     break
 
-                for dir in self.move_dir:
+                for i,dir in enumerate(self.move_dir):
                     next_i = cur_i + dir[0]
                     next_j = cur_j + dir[1]
                     if not (0 <= next_i < self.n and 0 <= next_j < self.n): continue
-                    if 0<=self.board[next_i][next_j]<=1:
-                        q.append([next_i,next_j,cur_arr+[[next_i,next_j]]])
+                    if 0<=visit[next_i][next_j]<=1:
+                        q.append([next_i,next_j,cur_arr+[i]])
+                        visit[next_i][next_j]=999
 
-            move_i,move_j = move_arr
+            move_i = start_i + self.move_dir[move_dir][0]
+            move_j = start_j + self.move_dir[move_dir][1]
+
             self.person[person_idx] = [move_i,move_j]
             if move_i == dst_i and move_j == dst_j:
                 self.board[move_i][move_j]=-1
@@ -106,8 +112,9 @@ class CBread():
     def run(self):
         time = 1
         while True:
-            if time == 4:
+            if time == 28:
                 a = 0
+            #rint(time)
             self.move(time + self.margin)
             if self.arrive_check() == True:
                 break
