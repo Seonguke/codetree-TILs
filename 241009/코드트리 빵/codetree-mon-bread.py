@@ -39,7 +39,7 @@ class CBread():
             if self.person[person_idx] is None : continue
             if self.person_state[person_idx]==True : continue
 
-            visit = [arr[:] for arr in self.board]
+            #visit = [arr[:] for arr in self.board]
             start_i, start_j = self.person[person_idx]
             dst_i, dst_j = self.person_store[person_idx]
             cnt = 2
