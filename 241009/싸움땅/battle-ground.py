@@ -66,11 +66,11 @@ class CGunner():
         return winner, loser
 
     def loser_act(self, idx):
-        loser_i, loser_j, d, init_power, gun = self.player[idx]
+        loser_i, loser_j, loser_d, init_power, gun = self.player[idx]
         self.board[loser_i][loser_j].append(gun)
         gun = 0
         for i in range(4):
-            d = (d + i) % 4
+            d = (loser_d + i) % 4
             next_i, next_j = self.get_next_move(loser_i, loser_j, d)
             if self.move_check(next_i,
                                next_j) == False: continue  # (조건)만약 해당 방향으로 나갈 때 격자를 벗어나는 경우에는 정반대 방향으로 방향을 바꾸어서 1만큼 이동
@@ -107,7 +107,6 @@ class CGunner():
             next_i, next_j = self.get_next_move(cur_i, cur_j, d)
             if self.move_check(next_i, next_j) == False:  # (조건)만약 해당 방향으로 나갈 때 격자를 벗어나는 경우에는 정반대 방향으로 방향을 바꾸어서 1만큼 이동
                 d = (d + 2) % 4
-
                 next_i, next_j = self.get_next_move(cur_i, cur_j, d)
             if self.board_player[next_i][next_j] is None:  # (조건)만약 이동한 방향에 플레이어가 없다면 해당 칸에 총이 있는지 확인
                 board_gun = self.get_board_gun_max(next_i, next_j)
