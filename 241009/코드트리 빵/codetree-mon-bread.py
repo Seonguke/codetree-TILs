@@ -55,7 +55,7 @@ class CBread():
                     next_i = cur_i + dir[0]
                     next_j = cur_j + dir[1]
                     if not (0 <= next_i < self.n and 0 <= next_j < self.n): continue
-                    if 0<=visit[next_i][next_j]<=1:
+                    if 0<=self.board[next_i][next_j]<=1:
                         q.append([next_i,next_j,cur_arr+[[next_i,next_j]]])
 
             move_i,move_j = move_arr
